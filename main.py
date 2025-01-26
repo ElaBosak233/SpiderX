@@ -1112,7 +1112,6 @@ class LoginGUI(ctk.CTk):
                 f"验证码错误: {self.error_counter['captcha_errors']}\n"
                 f"浏览器错误: {self.error_counter['browser_errors']}\n"
                 f"其他错误: {self.error_counter['other_errors']}\n"
-                f"总错误率: {error_rate:.2f}%"
             )
             
             # 更新界面显示
