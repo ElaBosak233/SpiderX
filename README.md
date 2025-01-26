@@ -41,3 +41,6 @@
 [https://github.com/user-attachments/assets/afd645a3-0443-4c56-a4bc-c9f1546d9bf6](https://github.com/user-attachments/assets/afd645a3-0443-4c56-a4bc-c9f1546d9bf6
 )
 
+🧑‍💻作者留言:
+爬虫模拟最大的问题就是反爬机制和各种报错，我尝试了很久也没办法完全处理各种的异常，因为有的异常selenium包里就没法绕过，所以就选择了最常见的几种格式来。
+同时为了有意向**二开的师傅**我也在GitHub上传了源码可以进行使用，大家可以根据check_login函数来自己自定义反应成功机制，根据login函数来调整登陆的点击操作，如果有好的想法欢迎与我交流😄
