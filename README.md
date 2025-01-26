@@ -1,6 +1,7 @@
 # SpiderX - JS前端加密自动化绕过工具 
 
 ![Static Badge](https://img.shields.io/badge/SpiderX-v1.0-blue)
+![Static Badge](https://img.shields.io/badge/python-3.12.3-yellow)
 ![Stars](https://img.shields.io/badge/dynamic/json?color=blue&label=Stars&query=stargazers_count&url=https%3A%2F%2Fapi.github.com%2Frepos%2FLiChaser%2FSpiderX)
 ## 🎯 核心用途
 
@@ -30,6 +31,9 @@
 ▸ 适用场景：base64图片解析
 
 3.javascript屏幕区域截图（最后5%）
+
+## ⚠️部署问题
+**python版本3.13后不行，因为ddddocr包会无法下载1.5.5版本，只要依赖包能正常下载都能运行。**
 
 ## 本地测试获取成功截图
 
