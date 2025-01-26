@@ -67,7 +67,7 @@ DEFAULT_CONFIG = {
     "success_xpath": '//*[contains(text(),"欢迎")]',  # 新增成功检测元素
     "user_file": "username.txt",
     "pass_file": "password.txt",
-    "threads": 10,               # 根据CPU核心数优化
+    "threads": 2,               # 根据CPU核心数优化
     "headless": True,
     "timeout": 5,               # 延长超时时间
     "max_retries": 3,           # 最大重试次数
