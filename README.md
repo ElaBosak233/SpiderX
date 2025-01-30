@@ -6,6 +6,8 @@
 
 (有师傅觉得gui界面用的不方便，我现在在整理纯脚本的文件，整理好会上传,师傅们等等)--已上传
 
+**我将gui和精简版的源码还有测试靶场已经打包放入release中**
+
 相关自写介绍文章
 
 https://mp.weixin.qq.com/s/FUpdomCBjHinAdAcLFieJg
