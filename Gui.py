@@ -147,7 +147,7 @@ class LoginGUI(ctk.CTk):
     def __init__(self):
         try:
             super().__init__()
-            self.title("Licharsec - SpiderX Pro v1.0")
+            self.title("Licharsec - SpiderX Pro v2.0")
             self.geometry("1200x800")
             self._create_widgets()
             self._load_default_files()
