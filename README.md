@@ -1,9 +1,16 @@
 # SpiderX - JS前端加密自动化绕过工具 
-(有师傅觉得gui界面用的不方便，我现在在整理纯脚本的文件，整理好会上传,师傅们等等)
 
 ![Static Badge](https://img.shields.io/badge/SpiderX-v1.0-blue)
 ![Static Badge](https://img.shields.io/badge/python-3.12.3-yellow)
 ![Stars](https://img.shields.io/badge/dynamic/json?color=blue&label=Stars&query=stargazers_count&url=https%3A%2F%2Fapi.github.com%2Frepos%2FLiChaser%2FSpiderX)
+
+(有师傅觉得gui界面用的不方便，我现在在整理纯脚本的文件，整理好会上传,师傅们等等)--已上传
+
+相关自写介绍文章
+
+https://mp.weixin.qq.com/s/FUpdomCBjHinAdAcLFieJg
+
+https://mp.weixin.qq.com/s/p4COfICXluUxctotQ7cw2A
 ## 🎯 核心用途
 
 ### 🔴 红队渗透增强
