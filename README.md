@@ -10,9 +10,12 @@
 
 相关自写介绍文章
 
+基础篇
+https://mp.weixin.qq.com/s/p4COfICXluUxctotQ7cw2A
+
+使用篇
 https://mp.weixin.qq.com/s/FUpdomCBjHinAdAcLFieJg
 
-https://mp.weixin.qq.com/s/p4COfICXluUxctotQ7cw2A
 ## 🎯 核心用途
 
 ### 🔴 红队渗透增强
