@@ -3,7 +3,7 @@
 @Toolsname: SpiderX
 @Author  : LiChaser
 @Time    : 2025-01-25
-@Version : 1.0
+@Version : 2.0
 @Description:
     - 这是一个基于 Selenium 的自动化脚本。
     - 功能包括：登录、验证码识别、数据抓取等。
