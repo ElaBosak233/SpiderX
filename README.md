@@ -71,3 +71,7 @@ https://mp.weixin.qq.com/s/FUpdomCBjHinAdAcLFieJg
 ## Star History
 
 [![Star History Chart](https://api.star-history.com/svg?repos=LiChaser/SpiderX&type=Date)](https://star-history.com/#LiChaser/SpiderX&Date)
+
+## 公众号
+![image](https://github.com/user-attachments/assets/14647f50-98f4-4f93-bc10-cd807f3ff78a)
+
