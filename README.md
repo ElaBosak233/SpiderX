@@ -4,9 +4,15 @@
 ![Static Badge](https://img.shields.io/badge/python-3.12.3-yellow)
 ![Stars](https://img.shields.io/badge/dynamic/json?color=blue&label=Stars&query=stargazers_count&url=https%3A%2F%2Fapi.github.com%2Frepos%2FLiChaser%2FSpiderX)
 
-(有师傅觉得gui界面用的不方便，我现在在整理纯脚本的文件，整理好会上传,师傅们等等)--已上传
+## 修改日志:
 
-**我将gui和精简版的源码还有测试靶场已经打包放入release中**
+2025-2-6 得到一些师傅的建议，发现drissionpage有更好的自动化性能，目前备考时间比较少，等结束打算重构下项目，感兴趣的师傅start我，随时推送动态
+
+2025-1-29 (有师傅觉得gui界面用的不方便，我现在在整理纯脚本的文件，整理好会上传,师傅们等等)--已上传
+
+2025-1-28 **我将gui和精简版的源码还有测试靶场已经打包放入release中**
+
+2025-1-26 初始版上线
 
 相关自写介绍文章
 
