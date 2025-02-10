@@ -79,5 +79,7 @@ https://mp.weixin.qq.com/s/FUpdomCBjHinAdAcLFieJg
 [![Star History Chart](https://api.star-history.com/svg?repos=LiChaser/SpiderX&type=Date)](https://star-history.com/#LiChaser/SpiderX&Date)
 
 ## 公众号
+
+自己有空写的一些网安内容，不搬运纯原创，如果你觉得无聊可以循着我的文章分享来实践一下。
 ![image](https://github.com/user-attachments/assets/14647f50-98f4-4f93-bc10-cd807f3ff78a)
 
