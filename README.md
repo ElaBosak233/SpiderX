@@ -5,6 +5,7 @@
 ![Stars](https://img.shields.io/badge/dynamic/json?color=blue&label=Stars&query=stargazers_count&url=https%3A%2F%2Fapi.github.com%2Frepos%2FLiChaser%2FSpiderX)
 
 ## 修改日志:
+2025-2-10 很多师傅遇到报错，这是正常的，因为本身模拟点击的成功率与网络影响息息相关，不要将这个工具当作常规武器，我初步的定位是内网段一些常见的弱密码容易爆破但因为加密影响得分，想要应用到更多的场景，就是要学会调试，例如闪退那就在检测函数或者填入函数进行sleep睡眠一步步来看，**建议使用前先看下面的介绍文章**
 
 2025-2-6 得到一些师傅的建议，发现drissionpage有更好的自动化性能，目前备考时间比较少，等结束打算重构下项目，感兴趣的师傅start我，随时推送动态
 
