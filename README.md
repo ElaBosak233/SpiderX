@@ -4,6 +4,7 @@
 ![Static Badge](https://img.shields.io/badge/python-3.12.3-yellow)
 ![Stars](https://img.shields.io/badge/dynamic/json?color=blue&label=Stars&query=stargazers_count&url=https%3A%2F%2Fapi.github.com%2Frepos%2FLiChaser%2FSpiderX)
 
+推广下我的新文章 https://mp.weixin.qq.com/s/LX5TI-iEvlDACO-HD7hOPA
 ## 修改日志:
 2025年2月12日 温馨提示：
 
