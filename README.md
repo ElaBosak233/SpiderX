@@ -4,8 +4,10 @@
 ![Static Badge](https://img.shields.io/badge/python-3.12.3-yellow)
 ![Stars](https://img.shields.io/badge/dynamic/json?color=blue&label=Stars&query=stargazers_count&url=https%3A%2F%2Fapi.github.com%2Frepos%2FLiChaser%2FSpiderX)
 
-推广下我的新文章 https://mp.weixin.qq.com/s/LX5TI-iEvlDACO-HD7hOPA
 ## 修改日志:
+2025年3月6日 
+
+不是不更新，而是最近没有时间，详情请看首页，抱歉抱歉😭😭
 2025年2月12日 温馨提示：
 
 这个工具的亮点在于通过模拟浏览器点击实现前端加密爆破。它源于我在实际场景中遇到的问题，经过多次测试，虽然仍有一些难以预料的异常情况，但整体效果还是不错的。如果你在使用过程中遇到问题，不妨根据我的思路，结合具体场景尝试自己编写脚本。其实花不了太多时间，而且相比无法解密的JS，这种方法至少为你提供了一种新的攻击途径。建议在存在弱密码或撞库可能的内网环境中使用，成功率会更高。
