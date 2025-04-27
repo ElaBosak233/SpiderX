@@ -100,7 +100,7 @@ https://mp.weixin.qq.com/s/FUpdomCBjHinAdAcLFieJg
 
 ## Star History
 
-[![Star History Chart](https://api.star-history.com/svg?repos=LiChaser/SpiderX&type=Date)](https://star-history.com/#LiChaser/SpiderX&Date)
+[![Star History Chart](https://api.star-history.com/svg?repos=LiChaser/SpiderX&type=Date)](https://www.star-history.com/#LiChaser/SpiderX&Date)
 
 ## 公众号
 
