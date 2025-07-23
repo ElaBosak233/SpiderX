@@ -4,7 +4,7 @@
 ![Static Badge](https://img.shields.io/badge/python-3.12.3-yellow)
 ![Stars](https://img.shields.io/badge/dynamic/json?color=blue&label=Stars&query=stargazers_count&url=https%3A%2F%2Fapi.github.com%2Frepos%2FLiChaser%2FSpiderX)
 
-## 修改日志:
+## 修改日志
 
 ### 2024年3月20日
 
