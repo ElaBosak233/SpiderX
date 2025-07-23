@@ -12,3 +12,4 @@ wheels/
 .venv
 
 error_logs.txt
+success.txt
